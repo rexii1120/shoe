@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Court Kicks 项目看板</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --done: #10b981;
+      --done-bg: #064e3b;
+      --progress: #3b82f6;
+      --progress-bg: #1e3a8a;
+      --todo: #f59e0b;
+      --todo-bg: #78350f;
+      --p1: #ef4444;
+      --p2: #f59e0b;
+      --p3: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      margin: 0 0 0.5rem;
+      font-size: 2rem;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-muted);
+    }
+
+    .meta {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1024px) {
+      .board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .column {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1rem;
+      min-height: 400px;
+    }
+
+    .column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .column-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-done {
+      background: var(--done-bg);
+      color: var(--done);
+    }
+
+    .badge-progress {
+      background: var(--progress-bg);
+      color: var(--progress);
+    }
+
+    .badge-todo {
+      background: var(--todo-bg);
+      color: var(--todo);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .card:hover {
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.25rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .tag-p1 {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--p1);
+    }
+
+    .tag-p2 {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--p2);
+    }
+
+    .tag-p3 {
+      background: rgba(107, 114, 128, 0.2);
+      color: #d1d5db;
+    }
+
+    .tag-core {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--progress);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .footer a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+        padding: 1rem;
+      }
+      .column {
+        break-inside: avoid;
+        background: white;
+        border: 1px solid #ccc;
+      }
+      .card {
+        background: white;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Court Kicks 项目看板</h1>
+    <p>基于 PRD 的开发任务跟踪板</p>
+  </div>
+
+  <div class="meta">
+    当前迭代：MVP 已上线 | 最后更新：2026-06-28 | 仓库：<a href="https://github.com/rexii1120/shoe" target="_blank">github.com/rexii1120/shoe</a>
+  </div>
+
+  <div class="board">
+    <!-- 已完成 -->
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title">
+          <span>✅</span>
+          <span>已完成</span>
+        </div>
+        <span class="badge badge-done">14</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">项目基础架构搭建（React 18 + Vite 6 + Express 4）</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">用户注册 / 登录 / JWT Token 认证</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">首页鞋库展示、搜索、分类筛选</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">鞋款详情页与下单流程</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">订单状态机与库存扣减/释放</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">我的订单列表与取消功能</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">AR 试穿 v1：图片上传 / 摄像头、鞋款叠加、拖拽缩放旋转</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">管理后台 - 运营概览</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">管理后台 - 订单管理</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">管理后台 - 鞋款管理</div>
+        <div class="card-meta"><span class="tag tag-core">核心</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">生产环境部署（Nginx + HTTPS + 域名）</div>
+        <div class="card-meta"><span class="tag tag-core">部署</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">后端 systemd 常驻服务配置</div>
+        <div class="card-meta"><span class="tag tag-core">部署</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">编写 PRD 产品需求文档</div>
+        <div class="card-meta"><span class="tag tag-core">文档</span></div>
+      </div>
+    </div>
+
+    <!-- 进行中 -->
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title">
+          <span>🔄</span>
+          <span>进行中</span>
+        </div>
+        <span class="badge badge-progress">2</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">真实支付接入调研（支付宝/微信支付接口对比）</div>
+        <div class="card-meta"><span class="tag tag-p1">P1</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">物流跟踪方案调研（快递 100 / 菜鸟 / 顺丰等接口）</div>
+        <div class="card-meta"><span class="tag tag-p1">P1</span></div>
+      </div>
+    </div>
+
+    <!-- 待办 -->
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title">
+          <span>📋</span>
+          <span>待办</span>
+        </div>
+        <span class="badge badge-todo">8</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">接入支付宝/微信支付，替代模拟支付</div>
+        <div class="card-meta"><span class="tag tag-p1">P1</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">接入快递物流跟踪接口，展示发货/归还物流信息</div>
+        <div class="card-meta"><span class="tag tag-p1">P1</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">订单完成后支持用户对鞋款评分和评论</div>
+        <div class="card-meta"><span class="tag tag-p2">P2</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">库存日历：按日期展示每个尺码的可租数量</div>
+        <div class="card-meta"><span class="tag tag-p2">P2</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">优惠券系统：支持折扣码、满减活动</div>
+        <div class="card-meta"><span class="tag tag-p2">P2</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">消息通知：订单状态变更短信/邮件提醒</div>
+        <div class="card-meta"><span class="tag tag-p3">P3</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">定时备份 SQLite 数据库</div>
+        <div class="card-meta"><span class="tag tag-p3">P3</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">鞋款多图详情页支持</div>
+        <div class="card-meta"><span class="tag tag-p3">P3</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>提示：使用浏览器打开后，可按 <kbd>Ctrl</kbd> + <kbd>P</kbd>（或 <kbd>⌘</kbd> + <kbd>P</kbd>）打印为 PDF。</p>
+    <p>Court Kicks Basketball Shoe Rental | <a href="https://91shoe.store" target="_blank">91shoe.store</a></p>
+  </div>
+</body>
+</html>
